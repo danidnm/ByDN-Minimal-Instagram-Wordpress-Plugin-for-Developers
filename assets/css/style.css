@@ -1,0 +1,32 @@
+.bydn-instagram-posts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:space-between;
+}
+
+.bydn-instagram-post {
+    flex: 0 0 32%;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.bydn-instagram-post img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+
+    .bydn-instagram-post {
+        flex: 0 0 48%;
+        border: 1px solid #ddd;
+        margin-bottom: 20px;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+}
