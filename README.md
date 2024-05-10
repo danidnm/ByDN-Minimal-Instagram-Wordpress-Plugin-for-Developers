@@ -1,4 +1,4 @@
-# ByDN Instagram
+# ByDN Minimal Instagram Wordpress Plugin for Developers
 
 **Versión:** 1.0.0  
 **Autor:** [Daniel Navarro](https://danielnavarroymas.com)  
