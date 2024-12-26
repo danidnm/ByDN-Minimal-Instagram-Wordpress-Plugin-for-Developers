@@ -17,12 +17,12 @@ function bydn_instagram_shortcode($atts) {
         $caption = '%' . $wpdb->esc_like($atts['caption']) . '%';
         $posts = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM $table_name WHERE caption LIKE %s ORDER BY downloaded_at DESC",
+                "SELECT * FROM $table_name WHERE caption LIKE %s ORDER BY insta_timestamp DESC",
                 $caption
             )
         );
     } else {
-        $posts = $wpdb->get_results("SELECT * FROM $table_name ORDER BY downloaded_at DESC");
+        $posts = $wpdb->get_results("SELECT * FROM $table_name ORDER BY insta_timestamp DESC");
     }
 
     // Include Template

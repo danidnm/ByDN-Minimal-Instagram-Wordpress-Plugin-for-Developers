@@ -17,7 +17,7 @@ function bydn_instagram_sync_function() {
     }
 
     // Build the Instagram API URL
-    $url = "https://graph.instagram.com/v19.0/{$instagram_account}/media?access_token={$instagram_token}&fields=caption,media_type,media_url,id";
+    $url = "https://graph.instagram.com/v19.0/me/media?access_token={$instagram_token}&fields=id,caption,media_type,media_url,permalink,timestamp";
 
     while ($url) {
 
@@ -65,6 +65,13 @@ function bydn_instagram_sync_function() {
             $insta_id = $post['id'];
             $caption = isset($post['caption']) ? sanitize_text_field($post['caption']) : '';
             $media_url = isset($post['media_url']) ? esc_url_raw($post['media_url']) : '';
+            $insta_timestamp = isset($post['timestamp']) ? sanitize_text_field($post['timestamp']) : '';
+            $permalink = isset($post['permalink']) ? sanitize_text_field($post['permalink']) : '';
+
+            // Transform to mySQL timestamp
+            if ($insta_timestamp) {
+                $insta_timestamp = date('Y-m-d H:i:s', strtotime($insta_timestamp));
+            }
 
             if ($post['media_type'] == 'VIDEO') {
                 continue;
@@ -81,9 +88,11 @@ function bydn_instagram_sync_function() {
                         'insta_id' => $insta_id,
                         'caption' => $caption,
                         'url' => $media_url,
-                        'downloaded_at' => current_time('mysql')
+                        'downloaded_at' => current_time('mysql'),
+                        'insta_timestamp' => $insta_timestamp,
+                        'permalink' => $permalink,
                     ],
-                    ['%s', '%s', '%s', '%s']
+                    ['%s', '%s', '%s', '%s', '%s', '%s']
                 );
             }
         }
@@ -98,3 +107,8 @@ function bydn_instagram_sync_function() {
     error_log("ByDN Instagram: Sync Instagram executed successfully.");
 }
 add_action('bydn_instagram_sync_event', 'bydn_instagram_sync_function');
+
+if (isset($_GET['run_cron']) && $_GET['run_cron'] === 'sync_instagram') {
+    do_action('bydn_instagram_sync_event');
+    echo 'Instagram synchronization cron executed.';
+}

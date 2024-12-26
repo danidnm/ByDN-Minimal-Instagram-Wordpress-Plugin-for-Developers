@@ -32,6 +32,8 @@ function bydn_instagram_activate() {
         insta_id VARCHAR(32) NOT NULL UNIQUE,
         caption TEXT NULL,
         url TEXT NOT NULL,
+        permalink TEXT NULL,
+        insta_timestamp datetime NOT NULL, 
         downloaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (id)
     ) $charset_collate;";
