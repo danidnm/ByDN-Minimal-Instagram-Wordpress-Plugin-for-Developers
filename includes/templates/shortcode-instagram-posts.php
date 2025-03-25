@@ -3,7 +3,13 @@
         <?php foreach ($posts as $post): ?>
             <div class="bydn-instagram-post">
                 <a href="<?php echo esc_url($post->permalink); ?>" target="_blank">
-                    <img src="<?php echo esc_url($post->url); ?>" alt="<?php echo esc_attr($post->caption); ?>" />
+                    <?php
+                    $imageUrl = $post->thumbnail_url;
+                    if (empty($imageUrl)) {
+                        $imageUrl = $post->url;
+                    }
+                    ?>
+                    <img src="<?php echo esc_url($imageUrl); ?>" alt="<?php echo esc_attr($post->caption); ?>" />
                 </a>
                 <p><?php echo esc_attr($post->caption); ?></p>
             </div>
