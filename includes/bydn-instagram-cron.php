@@ -16,8 +16,11 @@ function bydn_instagram_sync_function() {
         return;
     }
 
+    // Delete all posts
+    $wpdb->query("DELETE FROM `{$table_name}` WHERE 1=1");
+
     // Build the Instagram API URL
-    $url = "https://graph.instagram.com/v19.0/me/media?access_token={$instagram_token}&fields=id,caption,media_type,media_url,permalink,timestamp";
+    $url = "https://graph.instagram.com/v19.0/me/media?access_token={$instagram_token}&fields=id,caption,media_type,thumbnail_url,media_url,permalink,timestamp";
 
     while ($url) {
 
@@ -48,6 +51,8 @@ function bydn_instagram_sync_function() {
         // Decode JSON response
         $data = json_decode($response, true);
 
+        //die(var_dump($data));
+
         // Check for valid JSON data
         if (json_last_error() !== JSON_ERROR_NONE) {
             error_log("ByDN Instagram: JSON decode error: " . json_last_error_msg());
@@ -64,6 +69,7 @@ function bydn_instagram_sync_function() {
         foreach ($data['data'] as $post) {
             $insta_id = $post['id'];
             $caption = isset($post['caption']) ? sanitize_text_field($post['caption']) : '';
+            $thumbnail_url = isset($post['thumbnail_url']) ? esc_url_raw($post['thumbnail_url']) : '';
             $media_url = isset($post['media_url']) ? esc_url_raw($post['media_url']) : '';
             $insta_timestamp = isset($post['timestamp']) ? sanitize_text_field($post['timestamp']) : '';
             $permalink = isset($post['permalink']) ? sanitize_text_field($post['permalink']) : '';
@@ -73,9 +79,9 @@ function bydn_instagram_sync_function() {
                 $insta_timestamp = date('Y-m-d H:i:s', strtotime($insta_timestamp));
             }
 
-            if ($post['media_type'] == 'VIDEO') {
-                continue;
-            }
+            //if ($post['media_type'] == 'VIDEO') {
+            //    continue;
+            //}
 
             // Check if the post already exists in the database
             $existing_post = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE insta_id = %s", $insta_id));
@@ -87,12 +93,13 @@ function bydn_instagram_sync_function() {
                     [
                         'insta_id' => $insta_id,
                         'caption' => $caption,
+                        'thumbnail_url' => $thumbnail_url,
                         'url' => $media_url,
                         'downloaded_at' => current_time('mysql'),
                         'insta_timestamp' => $insta_timestamp,
                         'permalink' => $permalink,
                     ],
-                    ['%s', '%s', '%s', '%s', '%s', '%s']
+                    ['%s', '%s', '%s', '%s', '%s', '%s', '%s']
                 );
             }
         }

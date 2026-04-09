@@ -31,6 +31,7 @@ function bydn_instagram_activate() {
         id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
         insta_id VARCHAR(32) NOT NULL UNIQUE,
         caption TEXT NULL,
+        thumbnail_url TEXT NULL DEFAULT NULL,
         url TEXT NOT NULL,
         permalink TEXT NULL,
         insta_timestamp datetime NOT NULL, 
